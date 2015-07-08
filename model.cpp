@@ -1,9 +1,11 @@
 #include "model.h"
 
+#include <stdlib.h>
+
 Model::Model(int speed)
 {
-    int m = Rect::HEIGHT / (Rect::SPAN + Rect::WOOD_HEIGHT); // rows
-    int n = Rect::WIDTH / (Rect::SPAN + Rect::WOOD_WIDTH); // columns
+    m = Rect::HEIGHT / (Rect::SPAN + Rect::WOOD_HEIGHT); // rows
+    n = Rect::WIDTH / (Rect::SPAN + Rect::WOOD_WIDTH); // columns
 
     // create m * n woods
     for (int i = 0; i < m; ++i) {
@@ -13,11 +15,13 @@ Model::Model(int speed)
         } else {
             dir = Point(-1, 0);
         }
+
+        int rowSpeed = speed + rand() % RANGE;
         for (int j = 0; j < n; ++j) {
             woods.push_back(Wood(Rect(Rect::SPAN * (j + 1) + Rect::WOOD_WIDTH * j,
                                       Rect::SPAN * (i + 1) + Rect::WOOD_HEIGHT * i,
                                       Rect::WOOD_WIDTH, Rect::WOOD_HEIGHT),
-                                 speed + rand() % RANGE * 2 - RANGE, dir));
+                                 rowSpeed, dir));
         }
     }
 

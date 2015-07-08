@@ -50,7 +50,8 @@ struct Wood
 
     bool move()
     {
-        rect.moveCenter(dir * speed);
+        QPoint offset = dir * speed;
+        rect.adjust(offset.x(), offset.y(), offset.x(), offset.y());
         return (rect.left() <= Rect::RIGHT && rect.right() >= Rect::LEFT);
     }
 };
@@ -59,6 +60,7 @@ struct Model
 {
     // generate random sample
     Model(int speed);
+    int m, n;
 
     // locale frog
     Rect frogRect() const;
