@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 
-Model::Model(int interval)
+Model::Model()
 {
     m = Rect::HEIGHT / (Rect::SPAN + Rect::WOOD_HEIGHT); // rows
     n = Rect::WIDTH / (Rect::SPAN + Rect::WOOD_WIDTH); // columns
@@ -16,12 +16,11 @@ Model::Model(int interval)
             dir = Point(-1, 0);
         }
 
-        int rowInteval = interval - rand() % RANGE;
         for (int j = 0; j < n; ++j) {
             woods.push_back(Wood(Rect(Rect::SPAN * (j + 1) + Rect::WOOD_WIDTH * j,
                                       Rect::SPAN * (i + 1) + Rect::WOOD_HEIGHT * i,
                                       Rect::WOOD_WIDTH, Rect::WOOD_HEIGHT),
-                                 rowInteval, dir));
+                                 dir));
         }
     }
 

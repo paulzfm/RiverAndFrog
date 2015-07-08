@@ -6,8 +6,8 @@
 #include <QBrush>
 #include <QPen>
 
-View::View(QWidget *parent, int speed) :
-    QWidget(parent), ui(new Ui::View), model(speed)
+View::View(QWidget *parent) :
+    QWidget(parent), ui(new Ui::View)
 {
     ui->setupUi(this);
     setFixedSize(Rect::WIDTH, Rect::HEIGHT);

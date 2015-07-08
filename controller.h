@@ -14,49 +14,44 @@ struct Param
 {
     int begin;
     int end;
+    int row;
     Controller *controller;
 };
 
 // updaters
 void* updateData(void* args);
 void* syncScreen(void* args);
+void* clock(void* args);
 
 class Controller : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit Controller(QWidget *parent, int speed)
-        : QWidget(parent)
-    {
-        view = new View(this, speed);
-    }
+    explicit Controller(QWidget *parent = 0);
 
     View* getView() { return view; }
 
     // start game
     void play();
 
+    void gameOver();
+
     // speed control
-    void speedUp();
-    void slowDown();
+    void updateIntervals(int range);
 
     // keyboard responser
     void keyboardResponse(int key);
 
     View* view;
-    // mutex
-    pthread_mutex_t mutex;
-
-//private:
-    int speed; // current speed
-    int frog;  // current frog
     bool over; // game over?
-
-    const static int MAX_SPEED = 10;
-
+    int second;
     std::unique_ptr<pthread_t[]> threads;
     std::unique_ptr<Param[]> params;
+    std::unique_ptr<int[]> intervals;
+    pthread_mutex_t mutex;
+
+    const static int MAX_SPEED = 10;
 };
 
 #endif // CONTROLLER_H

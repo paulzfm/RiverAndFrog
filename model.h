@@ -42,11 +42,10 @@ struct Rect : public QRect
 struct Wood
 {
     Rect rect;
-    int interval;
     Point dir; // (1, 0) or (-1, 0)
 
-    Wood(const Rect& rect, int interval, const Point& dir)
-        : rect(rect), interval(interval), dir(dir) {}
+    Wood(const Rect& rect, const Point& dir)
+        : rect(rect), dir(dir) {}
 
     void move()
     {
@@ -73,7 +72,7 @@ struct Frog
 struct Model
 {
     // generate random sample
-    Model(int interval);
+    Model();
     int m, n;
 
     // move frog
@@ -83,8 +82,6 @@ struct Model
     // objects
     Frog frog;
     std::vector<Wood> woods;
-
-    const static int RANGE = 1000;
 };
 
 #endif // MODEL_H

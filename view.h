@@ -16,7 +16,7 @@ class View : public QWidget
     Q_OBJECT
 
 public:
-    explicit View(QWidget *parent, int speed);
+    explicit View(QWidget *parent = 0);
     ~View();
 
     // update view
