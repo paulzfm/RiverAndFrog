@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     layout->addWidget(info, 0, 0);
 
     // controller
-    controller = new Controller(this, 5);
+    controller = new Controller(this, 100000);
     layout->addWidget(controller->getView(), 1, 0);
 
     controller->play();

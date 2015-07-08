@@ -32,7 +32,7 @@ void View::paintFrog()
     QPainter painter(this);
     painter.setBrush(QBrush(Qt::green));
     painter.setPen(QPen());
-    painter.drawRect(model.frogRect());
+    painter.drawRect(model.frog.rect);
 }
 
 void View::paintWood(const Wood &wood)

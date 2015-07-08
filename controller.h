@@ -19,7 +19,7 @@ struct Param
 
 // updaters
 void* updateData(void* args);
-void* syncScreen(void*);
+void* syncScreen(void* args);
 
 class Controller : public QWidget
 {
@@ -45,6 +45,8 @@ public:
     void keyboardResponse(int key);
 
     View* view;
+    // mutex
+    pthread_mutex_t mutex;
 
 //private:
     int speed; // current speed

@@ -42,37 +42,49 @@ struct Rect : public QRect
 struct Wood
 {
     Rect rect;
-    int speed;
+    int interval;
     Point dir; // (1, 0) or (-1, 0)
 
-    Wood(const Rect& rect, int speed, const Point& dir)
-        : rect(rect), speed(speed), dir(dir) {}
+    Wood(const Rect& rect, int interval, const Point& dir)
+        : rect(rect), interval(interval), dir(dir) {}
 
-    bool move()
+    void move()
     {
-        QPoint offset = dir * speed;
+        QPoint offset = dir;
         rect.adjust(offset.x(), offset.y(), offset.x(), offset.y());
-        return (rect.left() <= Rect::RIGHT && rect.right() >= Rect::LEFT);
+        if (rect.left() > Rect::RIGHT) { // right overflow
+            rect.setCoords(Rect::LEFT - Rect::WOOD_WIDTH,
+                           rect.bottom() - Rect::WOOD_HEIGHT,
+                           Rect::LEFT, rect.bottom());
+        } else if (rect.right() < Rect::LEFT) { // left overflow
+            rect.setCoords(Rect::RIGHT, rect.top(),
+                           Rect::RIGHT + Rect::WOOD_WIDTH,
+                           rect.top() + Rect::WOOD_HEIGHT);
+        }
     }
+};
+
+struct Frog
+{
+    Rect rect;
+    int on;
 };
 
 struct Model
 {
     // generate random sample
-    Model(int speed);
+    Model(int interval);
     int m, n;
-
-    // locale frog
-    Rect frogRect() const;
 
     // move frog
     bool frogJump(bool up);
+    bool frogMove();
 
     // objects
-    int frog;
+    Frog frog;
     std::vector<Wood> woods;
 
-    const static int RANGE = 5;
+    const static int RANGE = 1000;
 };
 
 #endif // MODEL_H

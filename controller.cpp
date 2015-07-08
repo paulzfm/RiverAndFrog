@@ -9,8 +9,9 @@ void Controller::play()
     // drawing
     view->update();
 
-    threads = std::unique_ptr<pthread_t[]>(new pthread_t[view->model.m]);
-    params = std::unique_ptr<Param[]>(new Param[view->model.m]);
+    threads = std::unique_ptr<pthread_t[]>(new pthread_t[view->model.m + 1]);
+    params = std::unique_ptr<Param[]>(new Param[view->model.m + 1]);
+    pthread_mutex_init(&mutex, NULL);
 
     // start moving
     for (int i = 0; i < view->model.m; ++i) {
@@ -19,6 +20,10 @@ void Controller::play()
         params[i].end = (i + 1) * view->model.n;
         pthread_create(&threads[i], NULL, updateData, (void*)&params[i]);
     }
+
+    // start repainting
+    params[view->model.m].controller = this;
+    pthread_create(&threads[view->model.m], NULL, syncScreen, (void*)&params[view->model.m]);
 }
 
 void Controller::keyboardResponse(int key)
@@ -58,9 +63,28 @@ void* updateData(void *args)
         for (int i = param->begin; i < param->end; ++i) {
             param->controller->view->model.woods[i].move();
         }
+        if (param->begin <= param->controller->view->model.frog.on &&
+            param->controller->view->model.frog.on < param->end) {
+            param->controller->view->model.frogMove();
+        }
 
+//        pthread_mutex_lock(&(param->controller->mutex));
+//        param->controller->view->update();
+//        pthread_mutex_unlock(&(param->controller->mutex));
+        usleep(param->controller->view->model.woods[param->begin].interval);
+    }
+
+    pthread_exit(NULL);
+}
+
+void* syncScreen(void *args)
+{
+    Param *param = (Param*)args;
+    qDebug() << "Thread create: sync screen";
+
+    while (!param->controller->over) {
         param->controller->view->update();
-        sleep(1);
+        usleep(20000);
     }
 
     pthread_exit(NULL);
