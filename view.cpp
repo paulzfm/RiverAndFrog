@@ -1,16 +1,22 @@
 #include "view.h"
 #include "ui_view.h"
 
-#include <QDebug>
 #include <QPainter>
-#include <QBrush>
-#include <QPen>
 
 View::View(QWidget *parent) :
     QWidget(parent), ui(new Ui::View)
 {
     ui->setupUi(this);
     setFixedSize(Rect::WIDTH, Rect::HEIGHT);
+
+    QImage origin;
+    origin.load(":/img/frog.png");
+    frog = origin.scaled(QSize(Rect::FROG_WIDTH, Rect::FROG_HEIGHT),
+                        Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    origin.load(":/img/wood.jpeg");
+    wood = origin.scaled(QSize(Rect::WOOD_WIDTH, Rect::WOOD_HEIGHT),
+                         Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 }
 
 View::~View()
@@ -20,26 +26,11 @@ View::~View()
 
 void View::paintEvent(QPaintEvent*)
 {
-    for (const auto& wood : model.woods) {
-        paintWood(wood);
+    QPainter painter(this);
+    for (const auto& w : model.woods) {
+        painter.drawImage(w.rect, wood);
     }
 
-    paintFrog();
-}
-
-void View::paintFrog()
-{
-    QPainter painter(this);
-    painter.setBrush(QBrush(Qt::green));
-    painter.setPen(QPen());
-    painter.drawRect(model.frog.rect);
-}
-
-void View::paintWood(const Wood &wood)
-{
-    QPainter painter(this);
-    painter.setBrush(QBrush(Qt::black));
-    painter.setPen(QPen());
-    painter.drawRect(wood.rect);
+    painter.drawImage(model.frog.rect, frog);
 }
 

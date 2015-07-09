@@ -37,7 +37,7 @@ struct Rect : public QRect
     const static int WOOD_WIDTH = 40;
     const static int WOOD_HEIGHT = 20;
     const static int FROG_WIDTH = 20;
-    const static int FROG_HEIGHT = 15;
+    const static int FROG_HEIGHT = 20;
 };
 
 struct Wood

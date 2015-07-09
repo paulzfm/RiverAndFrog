@@ -4,6 +4,7 @@
 #include "model.h"
 
 #include <QWidget>
+#include <QImage>
 #include <QKeyEvent>
 #include <QPaintEvent>
 
@@ -26,10 +27,7 @@ public:
 
 private:
     Ui::View *ui;
-
-    // paint
-    void paintFrog();
-    void paintWood(const Wood& wood);
+    QImage frog, wood;
 };
 
 #endif // VIEW_H
