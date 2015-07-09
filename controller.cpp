@@ -40,6 +40,12 @@ void Controller::play()
     pthread_create(&threads[view->model.m + 1], NULL, clock, (void*)&params[view->model.m + 1]);
 }
 
+void Controller::win()
+{
+    QMessageBox::information(NULL, "Win", "You win!",
+                             QMessageBox::Ok, QMessageBox::Ok);
+}
+
 void Controller::gameOver()
 {
     QMessageBox::warning(NULL, "Game over", "Game over!",
@@ -48,22 +54,29 @@ void Controller::gameOver()
 
 void Controller::keyboardResponse(int key)
 {
+    int result;
     switch (key) {
     case Qt::Key_Up:
     case Qt::Key_W:
-        over = view->model.frogJump(true);
-        if (over) {
+        result = view->model.frogJump(true);
+        if (result == Model::GAME_OVER) {
+            over = true;
             gameOver();
+        } else if (result == Model::WIN) {
+            over = true;
+            win();
         }
-        view->update();
         break;
     case Qt::Key_Down:
     case Qt::Key_S:
-        over = view->model.frogJump(false);
-        if (over) {
+        result = view->model.frogJump(true);
+        if (result == Model::GAME_OVER) {
+            over = true;
             gameOver();
+        } else if (result == Model::WIN) {
+            over = true;
+            win();
         }
-        view->update();
         break;
     default:
         break;

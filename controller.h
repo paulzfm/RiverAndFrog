@@ -35,6 +35,10 @@ public:
     // start game
     void play();
 
+    // win
+    void win();
+
+    // lose
     void gameOver();
 
     // speed control
