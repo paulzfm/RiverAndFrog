@@ -62,3 +62,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     controller->keyboardResponse(event->key());
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    controller->exitGame();
+    event->accept();
+}
+

@@ -2,6 +2,8 @@
 #include "ui_view.h"
 
 #include <QPainter>
+#include <QPalette>
+#include <QColor>
 
 View::View(QWidget *parent) :
     QWidget(parent), ui(new Ui::View)
@@ -17,6 +19,11 @@ View::View(QWidget *parent) :
     origin.load(":/img/wood.jpeg");
     wood = origin.scaled(QSize(Rect::WOOD_WIDTH, Rect::WOOD_HEIGHT),
                          Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+
+    QPalette pal;
+    pal.setColor(QPalette::Background, QColor("#81eada"));
+    setAutoFillBackground(true);
+    setPalette(pal);
 }
 
 View::~View()

@@ -34,7 +34,6 @@ public:
     // game control
     void play(); // start
     void win();  // win
-    void gameOver(); // lose
     void restart(); // restart game?
 
     // speed control
@@ -55,6 +54,13 @@ public:
     std::unique_ptr<pthread_t[]> threads;
     std::unique_ptr<Param[]> params;
     std::unique_ptr<int[]> intervals;
+
+public slots:
+    void gameOver(); // lose
+    void exitGame(); // safety exit game
+
+signals:
+    void gameIsOver();
 
 private:
     QLabel *timer;

@@ -1,6 +1,8 @@
 #include "controller.h"
 
 #include <QMessageBox>
+#include <QCoreApplication>
+#include <QDebug>
 
 Controller::Controller(QWidget *parent)
     : QWidget(parent)
@@ -10,6 +12,8 @@ Controller::Controller(QWidget *parent)
     threads = std::unique_ptr<pthread_t[]>(new pthread_t[view->model.m + 2]);
     params = std::unique_ptr<Param[]>(new Param[view->model.m + 2]);
     intervals = std::unique_ptr<int[]>(new int[view->model.m]);
+
+    connect(this, SIGNAL(gameIsOver()), this, SLOT(gameOver()));
 }
 
 void Controller::play()
@@ -20,7 +24,7 @@ void Controller::play()
     updateProcess(view->model.m - 1);
 
     // random intervals
-    updateIntervals(1000);
+    updateIntervals(3000);
 
     // start moving
     for (int i = 0; i < view->model.m; ++i) {
@@ -59,7 +63,7 @@ void Controller::gameOver()
 void Controller::restart()
 {
     for (int i = 0; i < view->model.m + 2; ++i) {
-        pthread_join(threads[i], NULL);
+        pthread_kill(threads[i], NULL);
     }
 
     int ret = QMessageBox::question(NULL, "Information", "Do you want to play again?",
@@ -68,8 +72,17 @@ void Controller::restart()
         view->model.reset();
         play();
     } else {
-        exit(0);
+        exitGame();
     }
+}
+
+void Controller::exitGame()
+{
+    for (int i = 0; i < view->model.m + 2; ++i) {
+        pthread_kill(threads[i], NULL);
+    }
+
+    QCoreApplication::quit();
 }
 
 void Controller::keyboardResponse(int key)
@@ -86,7 +99,7 @@ void Controller::keyboardResponse(int key)
         updateProcess(view->model.frog.row);
         if (result == Model::GAME_OVER) {
             over = true;
-            gameOver();
+            emit gameIsOver();
         } else if (result == Model::WIN) {
             over = true;
             win();
@@ -98,7 +111,7 @@ void Controller::keyboardResponse(int key)
         updateProcess(view->model.frog.row);
         if (result == Model::GAME_OVER) {
             over = true;
-            gameOver();
+            emit gameIsOver();
         } else if (result == Model::WIN) {
             over = true;
             win();
@@ -150,10 +163,10 @@ void* updateData(void *args)
             param->controller->view->model.woods[i].move();
         }
         if (param->begin <= param->controller->view->model.frog.on &&
-                param->controller->view->model.frog.on < param->end) {
+            param->controller->view->model.frog.on < param->end) {
             if (!param->controller->view->model.frogMove()) {
                 param->controller->over = true;
-                param->controller->gameOver();
+                emit param->controller->gameIsOver();
             }
         }
 
@@ -182,7 +195,7 @@ void* clock(void *args)
     while (!param->controller->over) {
         ++param->controller->second;
         param->controller->updateTimer(param->controller->second);
-        param->controller->updateIntervals(1000 * param->controller->second);
+        param->controller->updateIntervals(3000 * param->controller->second);
         sleep(1);
     }
 

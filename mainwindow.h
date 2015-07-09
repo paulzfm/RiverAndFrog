@@ -6,6 +6,8 @@
 
 #include <QMainWindow>
 #include <QLabel>
+#include <QKeyEvent>
+#include <QCloseEvent>
 
 namespace Ui {
 class MainWindow;
@@ -19,6 +21,7 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *event);
+    void closeEvent(QCloseEvent *event);
 
 private:
     Ui::MainWindow *ui;
