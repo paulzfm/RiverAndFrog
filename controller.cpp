@@ -59,6 +59,7 @@ void Controller::keyboardResponse(int key)
     case Qt::Key_Up:
     case Qt::Key_W:
         result = view->model.frogJump(true);
+        updateProcess(view->model.frog.row);
         if (result == Model::GAME_OVER) {
             over = true;
             gameOver();
@@ -70,6 +71,7 @@ void Controller::keyboardResponse(int key)
     case Qt::Key_Down:
     case Qt::Key_S:
         result = view->model.frogJump(true);
+        updateProcess(view->model.frog.row);
         if (result == Model::GAME_OVER) {
             over = true;
             gameOver();
@@ -92,6 +94,27 @@ void Controller::updateIntervals(int range)
     for (int i = 0; i < view->model.m; ++i) {
         intervals[i] = 20000 - rand() % range;
     }
+}
+
+void Controller::setTimer(QLabel *label)
+{
+    timer = label;
+}
+
+void Controller::setProcess(QLabel *label)
+{
+    process = label;
+}
+
+void Controller::updateTimer(int second)
+{
+    timer->setText("Second: " + QString::number(second));
+}
+
+void Controller::updateProcess(int row)
+{
+    float percentage = 100 * (1.0 - (float)row / (view->model.m - 1));
+    process->setText("Process: " + QString::number(percentage, 'g', 3) + "%");
 }
 
 void* updateData(void *args)
@@ -140,10 +163,13 @@ void* clock(void *args)
 
     while (!param->controller->over) {
         ++param->controller->second;
-        qDebug() << param->controller->second;
+        param->controller->updateTimer(param->controller->second);
         param->controller->updateIntervals(1000 * param->controller->second);
         sleep(1);
     }
 
     pthread_exit(NULL);
 }
+
+
+

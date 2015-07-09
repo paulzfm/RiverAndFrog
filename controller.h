@@ -4,6 +4,7 @@
 #include "view.h"
 
 #include <QWidget>
+#include <QLabel>
 #include <memory>
 #include <pthread.h>
 #include <unistd.h>
@@ -47,6 +48,12 @@ public:
     // keyboard responser
     void keyboardResponse(int key);
 
+    //
+    void setTimer(QLabel *label);
+    void setProcess(QLabel *label);
+    void updateTimer(int second);
+    void updateProcess(int row);
+
     View* view;
     bool over; // game over?
     int second;
@@ -56,6 +63,10 @@ public:
     pthread_mutex_t mutex;
 
     const static int MAX_SPEED = 10;
+
+private:
+    QLabel *timer;
+    QLabel *process;
 };
 
 #endif // CONTROLLER_H

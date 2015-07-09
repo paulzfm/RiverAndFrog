@@ -23,6 +23,8 @@ protected:
 private:
     Ui::MainWindow *ui;
     View *view;
+    QLabel *timer;
+    QLabel *process;
     QLabel *info;
     Controller *controller;
 };
