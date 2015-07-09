@@ -1,7 +1,6 @@
 #include "model.h"
 
 #include <stdlib.h>
-#include <QDebug>
 
 Model::Model()
 {

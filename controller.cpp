@@ -2,7 +2,6 @@
 
 #include <QMessageBox>
 #include <QCoreApplication>
-#include <QDebug>
 
 Controller::Controller(QWidget *parent)
     : QWidget(parent)
