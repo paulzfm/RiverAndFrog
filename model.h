@@ -32,7 +32,7 @@ struct Rect : public QRect
     const static int RIGHT = 1200;
     const static int WIDTH = RIGHT - LEFT;
     const static int HEIGHT = BOTTOM - TOP;
-    const static int SPAN_WIDTH = 60;
+    const static int SPAN_WIDTH = 80;
     const static int SPAN_HEIGHT = 20;
     const static int WOOD_WIDTH = 70;
     const static int WOOD_HEIGHT = 40;

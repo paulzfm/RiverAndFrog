@@ -67,6 +67,9 @@ int Model::frogJump(bool up)
         frog.rect.adjust(0, -offset, 0, -offset);
         frog.row--;
     } else {
+        if (frog.row == m - 1) { // last row
+            return CONTINUE;
+        }
         frog.rect.adjust(0, offset, 0, offset);
         frog.row++;
     }
