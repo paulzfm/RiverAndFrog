@@ -27,16 +27,17 @@ struct Rect : public QRect
 
     // scene size
     const static int TOP = 0;
-    const static int BOTTOM = 500;
+    const static int BOTTOM = 600;
     const static int LEFT = 0;
-    const static int RIGHT = 1000;
+    const static int RIGHT = 1200;
     const static int WIDTH = RIGHT - LEFT;
     const static int HEIGHT = BOTTOM - TOP;
-    const static int SPAN = 20;
-    const static int WOOD_WIDTH = 100;
-    const static int WOOD_HEIGHT = 30;
-    const static int FROG_WIDTH = 50;
-    const static int FROG_HEIGHT = 20;
+    const static int SPAN_WIDTH = 40;
+    const static int SPAN_HEIGHT = 20;
+    const static int WOOD_WIDTH = 40;
+    const static int WOOD_HEIGHT = 20;
+    const static int FROG_WIDTH = 20;
+    const static int FROG_HEIGHT = 15;
 };
 
 struct Wood
@@ -74,16 +75,22 @@ struct Model
 {
     // generate random sample
     Model();
-    int m, n;
 
-    // move frog
+    // new random sample
+    void reset();
+
+    // frog jump
     int frogJump(bool up);
     // return:
     const static int CONTINUE = 0;
     const static int GAME_OVER = 1;
     const static int WIN = 2;
 
+    // frog move: follow wood
     bool frogMove();
+
+    // m * n woods
+    int m, n;
 
     // objects
     Frog frog;

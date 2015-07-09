@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->mainToolBar->setHidden(true);
 
     setWindowTitle("River and Frog");
 
@@ -33,17 +34,21 @@ MainWindow::MainWindow(QWidget *parent) :
 
     info = new QLabel(this);
     info->setAlignment(Qt::AlignCenter);
-    info->setText("I am info");
+    info->setText("Using ↑↓ to control frog.");
     boxLayout->addWidget(info);
 
     layout->addLayout(boxLayout, 0, 0);
 
     // controller
     controller = new Controller(this);
-    layout->addWidget(controller->getView(), 1, 0);
+    layout->addWidget(controller->view, 1, 0);
     controller->setTimer(timer);
     controller->setProcess(process);
 
+    // resize window
+    setFixedSize(Rect::WIDTH, Rect::HEIGHT + 10);
+
+    // start to play
     controller->play();
 }
 

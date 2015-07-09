@@ -1,6 +1,5 @@
 #include "controller.h"
 
-#include <QDebug>
 #include <QMessageBox>
 
 Controller::Controller(QWidget *parent)
@@ -11,13 +10,14 @@ Controller::Controller(QWidget *parent)
     threads = std::unique_ptr<pthread_t[]>(new pthread_t[view->model.m + 2]);
     params = std::unique_ptr<Param[]>(new Param[view->model.m + 2]);
     intervals = std::unique_ptr<int[]>(new int[view->model.m]);
-    pthread_mutex_init(&mutex, NULL);
 }
 
 void Controller::play()
 {
     over = false;
     second = 0;
+    updateTimer(0);
+    updateProcess(view->model.m - 1);
 
     // random intervals
     updateIntervals(1000);
@@ -42,18 +42,42 @@ void Controller::play()
 
 void Controller::win()
 {
+    view->update();
     QMessageBox::information(NULL, "Win", "You win!",
                              QMessageBox::Ok, QMessageBox::Ok);
+    restart();
 }
 
 void Controller::gameOver()
 {
+    view->update();
     QMessageBox::warning(NULL, "Game over", "Game over!",
                          QMessageBox::Ok, QMessageBox::Ok);
+    restart();
+}
+
+void Controller::restart()
+{
+    for (int i = 0; i < view->model.m + 2; ++i) {
+        pthread_join(threads[i], NULL);
+    }
+
+    int ret = QMessageBox::question(NULL, "Information", "Do you want to play again?",
+                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    if (ret == QMessageBox::Yes) {
+        view->model.reset();
+        play();
+    } else {
+        exit(0);
+    }
 }
 
 void Controller::keyboardResponse(int key)
 {
+    if (over) {
+        return;
+    }
+
     int result;
     switch (key) {
     case Qt::Key_Up:
@@ -70,7 +94,7 @@ void Controller::keyboardResponse(int key)
         break;
     case Qt::Key_Down:
     case Qt::Key_S:
-        result = view->model.frogJump(true);
+        result = view->model.frogJump(false);
         updateProcess(view->model.frog.row);
         if (result == Model::GAME_OVER) {
             over = true;
@@ -120,23 +144,19 @@ void Controller::updateProcess(int row)
 void* updateData(void *args)
 {
     Param *param = (Param*)args;
-    qDebug() << "Thread create: update data" << param->row;
 
     while (!param->controller->over) {
         for (int i = param->begin; i < param->end; ++i) {
             param->controller->view->model.woods[i].move();
         }
         if (param->begin <= param->controller->view->model.frog.on &&
-            param->controller->view->model.frog.on < param->end) {
+                param->controller->view->model.frog.on < param->end) {
             if (!param->controller->view->model.frogMove()) {
                 param->controller->over = true;
                 param->controller->gameOver();
             }
         }
 
-//        pthread_mutex_lock(&(param->controller->mutex));
-//        param->controller->view->update();
-//        pthread_mutex_unlock(&(param->controller->mutex));
         usleep(param->controller->intervals[param->row]);
     }
 
@@ -146,7 +166,6 @@ void* updateData(void *args)
 void* syncScreen(void *args)
 {
     Param *param = (Param*)args;
-    qDebug() << "Thread create: sync screen";
 
     while (!param->controller->over) {
         param->controller->view->update();
@@ -159,7 +178,6 @@ void* syncScreen(void *args)
 void* clock(void *args)
 {
     Param *param = (Param*)args;
-    qDebug() << "Thread create: clock";
 
     while (!param->controller->over) {
         ++param->controller->second;
@@ -170,6 +188,4 @@ void* clock(void *args)
 
     pthread_exit(NULL);
 }
-
-
 

@@ -31,16 +31,11 @@ class Controller : public QWidget
 public:
     explicit Controller(QWidget *parent = 0);
 
-    View* getView() { return view; }
-
-    // start game
-    void play();
-
-    // win
-    void win();
-
-    // lose
-    void gameOver();
+    // game control
+    void play(); // start
+    void win();  // win
+    void gameOver(); // lose
+    void restart(); // restart game?
 
     // speed control
     void updateIntervals(int range);
@@ -48,21 +43,18 @@ public:
     // keyboard responser
     void keyboardResponse(int key);
 
-    //
+    // status updater
     void setTimer(QLabel *label);
     void setProcess(QLabel *label);
     void updateTimer(int second);
     void updateProcess(int row);
 
-    View* view;
-    bool over; // game over?
-    int second;
+    View* view; // view map
+    bool over;  // game over?
+    int second; // current time
     std::unique_ptr<pthread_t[]> threads;
     std::unique_ptr<Param[]> params;
     std::unique_ptr<int[]> intervals;
-    pthread_mutex_t mutex;
-
-    const static int MAX_SPEED = 10;
 
 private:
     QLabel *timer;
@@ -70,3 +62,4 @@ private:
 };
 
 #endif // CONTROLLER_H
+
